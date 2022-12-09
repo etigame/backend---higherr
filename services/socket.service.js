@@ -19,9 +19,10 @@ function setupSocketAPI(http) {
         `Setting socket.userId = ${user._id} for socket [id: ${socket.id}]`,
         `Setting socket.fullname = ${user.fullname} for socket [id: ${socket.id}]`
       )
-        if(socket.userId) return
-
+      // if(socket.userId) return
+      
       socket.userId = user._id
+      console.log(socket.userId);
       socket.fullname = user.fullname
     return
     })
@@ -95,6 +96,25 @@ function setupSocketAPI(http) {
         
         const toSocket = await _getUserSocket(user._id)
         if(toSocket) toSocket.emit('user-is-watching', `Hey ${user.fullname}! A user is watching on your gig right now`)
+        return
+    })
+
+    socket.on('gig-ordered', async (gig) => {
+      logger.info(`ordered gig by socket [id: ${socket.id}], from user ${gig.owner.fullname}`)
+      socket.join('watching:' + gig.owner.fullname)
+      socket.emit('order-approved', `Hey ${socket.fullname}! \nYour order is being processed. Check your orders box and stay tuned.`)
+
+      const toSocket = await _getUserSocket(gig.owner._id)
+        if(toSocket) toSocket.emit('user-ordered-gig', `Hey ${gig.owner.fullname}! \nA user has just ordered one of your gigs right now! Check your dashboard and get to work.`)
+        return
+    })
+
+    socket.on('order-change-status', async (buyer) => {
+      logger.info(`Change order's status by socket [id: ${socket.id}], for buyer ${buyer._id}`)
+      socket.join('watching:' + buyer.fullname)
+
+      const toSocket = await _getUserSocket(buyer._id)
+        if(toSocket) toSocket.emit('order-status-update', `Hey ${buyer.fullname}! \nYour order's status has been changed! Check your orders box for more details.`)
         return
     })
 
