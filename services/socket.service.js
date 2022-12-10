@@ -114,6 +114,7 @@ function setupSocketAPI(http) {
       socket.join('watching:' + buyer.fullname)
 
       const toSocket = await _getUserSocket(buyer._id)
+      console.log('2', toSocket.id);
         if(toSocket) toSocket.emit('order-status-update', `Hey ${buyer.fullname}! \nYour order's status has been changed! Check your orders box for more details.`)
         return
     })
@@ -174,8 +175,9 @@ async function broadcast({ type, data, room = null, userId }) {
 
 async function _getUserSocket(userId) {
     const sockets = await _getAllSockets()
+    console.log(sockets.length);
     const socket = sockets.find((s) => s.userId === userId)
-    console.log(socket);
+    // console.log('1', socket);
   return socket
 }
 async function _getAllSockets() {
