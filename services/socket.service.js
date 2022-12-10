@@ -84,7 +84,7 @@ function setupSocketAPI(http) {
         let sellerSocket = _getUserSocket(socket.myTopic)
           setTimeout(() => {
             if (sellerSocket.userId === socket.myTopic) return
-            socket.emit('chat-add-msg', { txt : `Hey ${socket.fullname}! Thanks for your message, ${sellerSocket.fullname} will return to you as soon as possible`, by: 'Higherr' }), 1500})
+            socket.emit('chat-add-msg', { txt : `Hey ${socket.fullname}! Thanks for your message. ${sellerSocket.fullname} will return to you as soon as possible`, by: 'Higherr' }), 1500})
           socket.isNew = false
       }
       return
@@ -95,7 +95,7 @@ function setupSocketAPI(http) {
         socket.join('watching:' + user.fullname)
         
         const toSocket = await _getUserSocket(user._id)
-        if(toSocket) toSocket.emit('user-is-watching', `Hey ${user.fullname}! A user is watching on your gig right now`)
+        if(toSocket) toSocket.emit('user-is-watching', `Hey ${user.fullname}! A user is watching on your gig right now.`)
         return
     })
 
