@@ -95,7 +95,7 @@ function setupSocketAPI(http) {
         socket.join('watching:' + user.fullname)
         
         const toSocket = await _getUserSocket(user._id)
-        if(toSocket) toSocket.emit('user-is-watching', `Hey ${user.fullname}! A user is watching on your gig right now.`)
+        if(toSocket) toSocket.emit('user-is-watching', `Hey ${user.fullname}! A user is watching your gig right now.`)
         return
     })
 
