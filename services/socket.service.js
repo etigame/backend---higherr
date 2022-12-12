@@ -102,10 +102,10 @@ function setupSocketAPI(http) {
     socket.on('gig-ordered', async (gig) => {
       logger.info(`ordered gig by socket [id: ${socket.id}], from user ${gig.owner.fullname}`)
       socket.join('watching:' + gig.owner.fullname)
-      socket.emit('order-approved', `Hey ${socket.fullname}! \nYour order is being processed. Check your orders box and stay tuned.`)
+      socket.emit('order-approved', `Hey ${socket.fullname}! \nYour order is being processed. stay tuned.`)
 
       const toSocket = await _getUserSocket(gig.owner._id)
-        if(toSocket) toSocket.emit('user-ordered-gig', `Hey ${gig.owner.fullname}! \nA user has just ordered one of your gigs right now! Check your dashboard and get to work.`)
+        if(toSocket) toSocket.emit('user-ordered-gig', `Hey ${gig.owner.fullname}! \nA user has just ordered one of your gigs right now.`)
         return
     })
 
@@ -115,7 +115,7 @@ function setupSocketAPI(http) {
 
       const toSocket = await _getUserSocket(buyer._id)
       console.log('2', toSocket.id);
-        if(toSocket) toSocket.emit('order-status-update', `Hey ${buyer.fullname}! \nYour order's status has been changed! Check your orders box for more details.`)
+        if(toSocket) toSocket.emit('order-status-update', `Hey ${buyer.fullname}! \nYour order's status has been changed.`)
         return
     })
 
