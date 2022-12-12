@@ -36,11 +36,7 @@ async function addOrder(req, res) {
     const order = req.body
     const addedOrder = await orderService.add(order)
     res.json(addedOrder)
-
-    socketService.emitToUser({type: 'new-order-seller', data: order, userId: order.seller._id})
-
-    socketService.emitToUser({type: 'new-order-buyer', data: order, userId: order.buyer._id})
-
+    
   } catch (err) {
     logger.error('Failed to add order', err)
     res.status(500).send({ err: 'Failed to add order' })
