@@ -115,14 +115,14 @@ function setupSocketAPI(http) {
       socket.join('watching:' + gig.owner.fullname)
       socket.emit(
         'order-approved',
-        `Hey ${socket.fullname}! \nYour order is being processed. Check your orders box and stay tuned.`
+        `Hey ${socket.fullname}! \nYour order is being processed. stay tuned.`
       )
 
       const toSocket = await _getUserSocket(gig.owner._id)
       if (toSocket)
         toSocket.emit(
           'user-ordered-gig',
-          `Hey ${gig.owner.fullname}! \nA user has just ordered one of your gigs right now! Check your dashboard and get to work.`
+          `Hey ${gig.owner.fullname}! \nA user has just ordered one of your gigs right now.`
         )
       return
     })
@@ -138,7 +138,7 @@ function setupSocketAPI(http) {
       if (toSocket)
         toSocket.emit(
           'order-status-update',
-          `Hey ${buyer.fullname}! \nYour order's status has been changed! Check your orders box for more details.`
+          `Hey ${buyer.fullname}! \nYour order's status has been changed.`
         )
       return
     })
