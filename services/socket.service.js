@@ -20,13 +20,13 @@ function setupSocketAPI(http) {
         `Setting socket.fullname = ${user.fullname} for socket [id: ${socket.id}]`
       )
       // if(socket.userId) return
-      
+
       socket.userId = user._id
-      console.log(socket.userId);
+      console.log(socket.userId)
       socket.fullname = user.fullname
-    return
+      return
     })
-    
+
     socket.on('chat-set-topic', (topic) => {
       if (socket.myTopic === topic) return
       if (socket.myTopic) {
@@ -48,15 +48,13 @@ function setupSocketAPI(http) {
       socket.nickname = nickname
       socket.isNew = true
 
-      logger.info(
-        `${socket.nickname} joined a chat - [id: ${socket.id}]`
-      )
-    //   connectedUsers.push(nickname)
+      logger.info(`${socket.nickname} joined a chat - [id: ${socket.id}]`)
+      //   connectedUsers.push(nickname)
 
-    //   socket.broadcast.emit('chat-send-msg', {
-    //     txt: `${nickname} connected (${connectedUsers.length})`,
-    //     by: 'system',
-    //   })
+      //   socket.broadcast.emit('chat-send-msg', {
+      //     txt: `${nickname} connected (${connectedUsers.length})`,
+      //     by: 'system',
+      //   })
       return
     })
 
@@ -67,7 +65,7 @@ function setupSocketAPI(http) {
       msgs.push(msg)
 
       // emits to all sockets:
-    //   gIo.emit('chat-add-msg', msg)
+      //   gIo.emit('chat-add-msg', msg)
       // emits only to sockets in the same room
       gIo.to(socket.myTopic).emit('chat-add-msg', msg)
 
@@ -77,46 +75,72 @@ function setupSocketAPI(http) {
       // return
       // } else {
       //     gIo.to(msg.myTopic).emit('chat-send-msg', msg)
-            // return
+      // return
       // }
 
-      if(socket.isNew){
+      if (socket.isNew) {
         let sellerSocket = _getUserSocket(socket.myTopic)
-          setTimeout(() => {
-            if (sellerSocket.userId === socket.myTopic) return
-            socket.emit('chat-add-msg', { txt : `Hey ${socket.fullname}! Thanks for your message. ${sellerSocket.fullname} will return to you as soon as possible`, by: 'Higherr' }), 1500})
-          socket.isNew = false
+        setTimeout(() => {
+          if (sellerSocket.userId === socket.myTopic) return
+          socket.emit('chat-add-msg', {
+            txt: `Hey ${socket.fullname}! Thanks for your message. ${sellerSocket.fullname} will return to you as soon as possible`,
+            by: 'Higherr',
+          }),
+            1500
+        })
+        socket.isNew = false
       }
       return
     })
 
     socket.on('user-watch', async (user) => {
-        logger.info(`user-watch from socket [id: ${socket.id}], on user ${user.fullname}`)
-        socket.join('watching:' + user.fullname)
-        
-        const toSocket = await _getUserSocket(user._id)
-        if(toSocket) toSocket.emit('user-is-watching', `Hey ${user.fullname}! A user is watching your gig right now.`)
-        return
+      logger.info(
+        `user-watch from socket [id: ${socket.id}], on user ${user.fullname}`
+      )
+      socket.join('watching:' + user.fullname)
+
+      const toSocket = await _getUserSocket(user._id)
+      if (toSocket)
+        toSocket.emit(
+          'user-is-watching',
+          `Hey ${user.fullname}! A user is watching your gig right now.`
+        )
+      return
     })
 
     socket.on('gig-ordered', async (gig) => {
-      logger.info(`ordered gig by socket [id: ${socket.id}], from user ${gig.owner.fullname}`)
+      logger.info(
+        `ordered gig by socket [id: ${socket.id}], from user ${gig.owner.fullname}`
+      )
       socket.join('watching:' + gig.owner.fullname)
-      socket.emit('order-approved', `Hey ${socket.fullname}! \nYour order is being processed. Check your orders box and stay tuned.`)
+      socket.emit(
+        'order-approved',
+        `Hey ${socket.fullname}! \nYour order is being processed. Check your orders box and stay tuned.`
+      )
 
       const toSocket = await _getUserSocket(gig.owner._id)
-        if(toSocket) toSocket.emit('user-ordered-gig', `Hey ${gig.owner.fullname}! \nA user has just ordered one of your gigs right now! Check your dashboard and get to work.`)
-        return
+      if (toSocket)
+        toSocket.emit(
+          'user-ordered-gig',
+          `Hey ${gig.owner.fullname}! \nA user has just ordered one of your gigs right now! Check your dashboard and get to work.`
+        )
+      return
     })
 
     socket.on('order-change-status', async (buyer) => {
-      logger.info(`Change order's status by socket [id: ${socket.id}], for buyer ${buyer._id}`)
+      logger.info(
+        `Change order's status by socket [id: ${socket.id}], for buyer ${buyer._id}`
+      )
       socket.join('watching:' + buyer.fullname)
 
       const toSocket = await _getUserSocket(buyer._id)
-      console.log('2', toSocket.id);
-        if(toSocket) toSocket.emit('order-status-update', `Hey ${buyer.fullname}! \nYour order's status has been changed! Check your orders box for more details.`)
-        return
+      console.log('2', toSocket.id)
+      if (toSocket)
+        toSocket.emit(
+          'order-status-update',
+          `Hey ${buyer.fullname}! \nYour order's status has been changed! Check your orders box for more details.`
+        )
+      return
     })
 
     socket.on('unset-user-socket', () => {
@@ -126,8 +150,8 @@ function setupSocketAPI(http) {
     })
 
     socket.userId = socket.on('disconnect', (socket) => {
-        logger.info(`Socket disconnected [id: ${socket.id}]`)
-      })
+      logger.info(`Socket disconnected [id: ${socket.id}]`)
+    })
   })
 }
 
@@ -174,10 +198,10 @@ async function broadcast({ type, data, room = null, userId }) {
 }
 
 async function _getUserSocket(userId) {
-    const sockets = await _getAllSockets()
-    console.log(sockets.length);
-    const socket = sockets.find((s) => s.userId === userId)
-    // console.log('1', socket);
+  const sockets = await _getAllSockets()
+  console.log(sockets.length)
+  const socket = sockets.find((s) => s.userId === userId)
+  // console.log('1', socket);
   return socket
 }
 async function _getAllSockets() {
