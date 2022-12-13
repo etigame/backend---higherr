@@ -26,6 +26,17 @@ async function getUsers(req, res) {
     }
 }
 
+async function addUser(req, res) {
+    try {
+      const user = req.body
+      const addedUser = await userService.add(user)
+      res.json(addedUser)
+    } catch (err) {
+      logger.error('Failed to add user', err)
+      res.status(500).send({ err: 'Failed to add user' })
+    }
+  }
+
 async function deleteUser(req, res) {
     try {
         await userService.remove(req.params.id)
@@ -50,6 +61,7 @@ async function updateUser(req, res) {
 module.exports = {
     getUser,
     getUsers,
+    addUser,
     deleteUser,
     updateUser
 }
