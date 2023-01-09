@@ -15,6 +15,9 @@ async function query(filterBy) {
             order.createdAt = ObjectId(order._id).getTimestamp()
             return order
         })
+        orders = orders.sort( (o1, o2) => {
+            return o2.createdAt - o1.createdAt
+        })
         return orders
     } catch (err) {
         logger.error('cannot find orders', err)
