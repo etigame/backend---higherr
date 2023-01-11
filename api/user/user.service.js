@@ -76,7 +76,7 @@ async function update(user) {
     // pick only updatable properties
     const userToSave = {
       _id: ObjectId(user._id), // needed for the returnd obj
-      fullname: user.fullname,
+      username: user.username,
       location: user.location,
       description: user.description,
       imgUrl: user.imgUrl,
@@ -99,11 +99,13 @@ async function add(user) {
     const userToAdd = {
       username: user.username,
       password: user.password,
-      fullname: user.fullname,
+      username: user.username,
       imgUrl: user.imgUrl,
       location: user.location,
       memberSince: user.memberSince,
       description: user.description,
+      avgResponseTime: user.avgResponseTime,
+      lastDelivery: user.lastDelivery,
     }
     const collection = await dbService.getCollection('user')
     await collection.insertOne(userToAdd)

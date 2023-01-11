@@ -17,13 +17,13 @@ function setupSocketAPI(http) {
     socket.on('set-user-socket', (user) => {
       logger.info(
         `Setting socket.userId = ${user._id} for socket [id: ${socket.id}]`,
-        `Setting socket.fullname = ${user.fullname} for socket [id: ${socket.id}]`
+        `Setting socket.username = ${user.username} for socket [id: ${socket.id}]`
       )
       // if(socket.userId) return
 
       socket.userId = user._id
       console.log(socket.userId)
-      socket.fullname = user.fullname
+      socket.username = user.username
       return
     })
 
@@ -83,7 +83,7 @@ function setupSocketAPI(http) {
         setTimeout(() => {
           if (sellerSocket.userId === socket.myTopic) return
           socket.emit('chat-add-msg', {
-            txt: `Hey ${socket.fullname}! Thanks for your message. ${sellerSocket.fullname} will return to you as soon as possible`,
+            txt: `Hey ${socket.username}! Thanks for your message. ${sellerSocket.username} will return to you as soon as possible`,
             by: 'Higherr',
           }),
             1500
@@ -95,34 +95,34 @@ function setupSocketAPI(http) {
 
     socket.on('user-watch', async (user) => {
       logger.info(
-        `user-watch from socket [id: ${socket.id}], on user ${user.fullname}`
+        `user-watch from socket [id: ${socket.id}], on user ${user.username}`
       )
-      socket.join('watching:' + user.fullname)
+      socket.join('watching:' + user.username)
 
       const toSocket = await _getUserSocket(user._id)
       if (toSocket)
         toSocket.emit(
           'user-is-watching',
-          `Hey ${user.fullname}! A user is watching your gig right now.`
+          `Hey ${user.username}! A user is watching your gig right now.`
         )
       return
     })
 
     socket.on('gig-ordered', async (gig) => {
       logger.info(
-        `ordered gig by socket [id: ${socket.id}], from user ${gig.owner.fullname}`
+        `ordered gig by socket [id: ${socket.id}], from user ${gig.owner.username}`
       )
-      socket.join('watching:' + gig.owner.fullname)
+      socket.join('watching:' + gig.owner.username)
       socket.emit(
         'order-approved',
-        `Hey ${socket.fullname}! \nYour order is being processed. stay tuned.`
+        `Hey ${socket.username}! \nYour order is being processed. stay tuned.`
       )
 
       const toSocket = await _getUserSocket(gig.owner._id)
       if (toSocket)
         toSocket.emit(
           'user-ordered-gig',
-          `Hey ${gig.owner.fullname}! \nA user has just ordered one of your gigs right now.`
+          `Hey ${gig.owner.username}! \nA user has just ordered one of your gigs right now.`
         )
       return
     })
