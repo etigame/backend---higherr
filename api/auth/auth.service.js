@@ -18,6 +18,15 @@ async function login(username, password) {
   return user
 }
 
+async function loginViaGoogle(username) {
+  logger.debug(`auth.service - login with username: ${username}`)
+
+  const user = await userService.getByUsername(username)
+  if (!user) return Promise.reject('Invalid username')
+  user._id = user._id.toString()
+  return user
+}
+
 // (async ()=>{
 //     await signup('bubu', '123', 'Bubu Bi')
 //     await signup('mumu', '123', 'Mumu Maha')
@@ -37,6 +46,20 @@ async function signup(user) {
   return userService.add({ ...user, password: hash })
 }
 
+async function signupViaGoogle(user) {
+//   const saltRounds = 10
+  logger.debug(`auth.service - signup with username: ${user.username}`)
+  // if (!user.username || !user.password || !user.fullname)
+  if (!user.username)
+    return Promise.reject('Missing required signup information')
+
+  const userExist = await userService.getByUsername(user.username)
+  if (userExist) return Promise.reject('Username already taken')
+
+//   const hash = await bcrypt.hash(user.password, saltRounds)
+  return userService.add({ ...user })
+}
+
 function getLoginToken(user) {
   return cryptr.encrypt(JSON.stringify(user))
 }
@@ -54,7 +77,9 @@ function validateToken(loginToken) {
 
 module.exports = {
   signup,
+  signupViaGoogle,
   login,
+  loginViaGoogle,
   getLoginToken,
   validateToken,
 }
