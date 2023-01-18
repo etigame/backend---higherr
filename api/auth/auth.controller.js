@@ -32,18 +32,13 @@ async function signup(req, res) {
   console.log(req.body)
   try {
     const credentials = req.body
-
-    // Never log passwords
-    // logger.debug(credentials)
     const account = await authService.signup(credentials)
     logger.debug(`auth.route - new account created: ` + JSON.stringify(account))
-
     const user = await authService.login(
       credentials.username,
       credentials.password
     )
     logger.info('User signup:', user)
-
     const loginToken = authService.getLoginToken(user)
     res.cookie('loginToken', loginToken, { sameSite: 'None', secure: true })
     res.json(user)
@@ -57,15 +52,10 @@ async function signupViaGoogle(req, res) {
   console.log(req.body)
   try {
     const credentials = req.body
-
-    // Never log passwords
-    // logger.debug(credentials)
     const account = await authService.signupViaGoogle(credentials)
     logger.debug(`auth.route - new account created: ` + JSON.stringify(account))
-
     const user = await authService.loginViaGoogle(credentials.username)
     logger.info('User signup:', user)
-
     const loginToken = authService.getLoginToken(user)
     res.cookie('loginToken', loginToken, { sameSite: 'None', secure: true })
     res.json(user)

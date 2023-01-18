@@ -3,7 +3,6 @@ const logger = require('./logger.service')
 var gIo = null
 
 const msgs = []
-let connectedUsers = []
 
 function setupSocketAPI(http) {
   gIo = require('socket.io')(http, {
@@ -19,7 +18,6 @@ function setupSocketAPI(http) {
         `Setting socket.userId = ${user._id} for socket [id: ${socket.id}]`,
         `Setting socket.username = ${user.username} for socket [id: ${socket.id}]`
       )
-      // if(socket.userId) return
 
       socket.userId = user._id
       console.log(socket.userId)
@@ -49,12 +47,7 @@ function setupSocketAPI(http) {
       socket.isNew = true
 
       logger.info(`${socket.nickname} joined a chat - [id: ${socket.id}]`)
-      //   connectedUsers.push(nickname)
 
-      //   socket.broadcast.emit('chat-send-msg', {
-      //     txt: `${nickname} connected (${connectedUsers.length})`,
-      //     by: 'system',
-      //   })
       return
     })
 
@@ -64,19 +57,7 @@ function setupSocketAPI(http) {
       )
       msgs.push(msg)
 
-      // emits to all sockets:
-      //   gIo.emit('chat-add-msg', msg)
-      // emits only to sockets in the same room
       gIo.to(socket.myTopic).emit('chat-add-msg', msg)
-
-      // if(msg.to){
-      //     const toSocket = await _getUserSocket(msg.to)
-      //     if(toSocket) toSocket.emit('chat-send-msg', msg)
-      // return
-      // } else {
-      //     gIo.to(msg.myTopic).emit('chat-send-msg', msg)
-      // return
-      // }
 
       if (socket.isNew) {
         let sellerSocket = _getUserSocket(socket.myTopic)
@@ -131,14 +112,14 @@ function setupSocketAPI(http) {
       logger.info(
         `Change order's status by socket [id: ${socket.id}], for buyer ${buyer._id}`
       )
-      socket.join('watching:' + buyer.fullname)
+      socket.join('watching:' + buyer.username)
 
       const toSocket = await _getUserSocket(buyer._id)
       console.log('2', toSocket.id)
       if (toSocket)
         toSocket.emit(
           'order-status-update',
-          `Hey ${buyer.fullname}! \nYour order's status has been changed.`
+          `Hey ${buyer.username}! \nYour order's status has been changed.`
         )
       return
     })
@@ -171,12 +152,9 @@ async function emitToUser({ type, data, userId }) {
     socket.emit(type, data)
   } else {
     logger.info(`No active socket for user: ${userId}`)
-    // _printSockets()
   }
 }
 
-// If possible, send to all sockets BUT not the current socket
-// Optionally, broadcast to a room / to all
 async function broadcast({ type, data, room = null, userId }) {
   userId = userId.toString()
 
@@ -201,11 +179,9 @@ async function _getUserSocket(userId) {
   const sockets = await _getAllSockets()
   console.log(sockets.length)
   const socket = sockets.find((s) => s.userId === userId)
-  // console.log('1', socket);
   return socket
 }
 async function _getAllSockets() {
-  // return all Socket instances
   const sockets = await gIo.fetchSockets()
   return sockets
 }

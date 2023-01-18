@@ -1,5 +1,11 @@
 const express = require('express')
-const {login, loginViaGoogle, signup, signupViaGoogle, logout} = require('./auth.controller')
+const {
+  login,
+  loginViaGoogle,
+  signup,
+  signupViaGoogle,
+  logout,
+} = require('./auth.controller')
 
 const router = express.Router()
 
