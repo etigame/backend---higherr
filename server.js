@@ -30,7 +30,6 @@ const authRoutes = require('./api/auth/auth.routes')
 const userRoutes = require('./api/user/user.routes')
 const orderRoutes = require('./api/order/order.routes')
 const gigRoutes = require('./api/gig/gig.routes')
-// const gigRoutes = require('./api/gig/gig.routes')
 const { setupSocketAPI } = require('./services/socket.service')
 
 // routes
