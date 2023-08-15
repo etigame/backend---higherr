@@ -4,7 +4,6 @@ const userService = require('../user/user.service')
 const authService = require('../auth/auth.service')
 const socketService = require('../../services/socket.service')
 
-
 // GET LIST
 async function getGigs(req, res) {
   try {
@@ -18,7 +17,7 @@ async function getGigs(req, res) {
   }
 }
 
-// GET BY ID 
+// GET BY ID
 async function getGigById(req, res) {
   try {
     const gigId = req.params.id
@@ -51,7 +50,6 @@ async function updateGig(req, res) {
   } catch (err) {
     logger.error('Failed to update gig', err)
     res.status(500).send({ err: 'Failed to update gig' })
-
   }
 }
 
@@ -72,5 +70,5 @@ module.exports = {
   getGigById,
   addGig,
   updateGig,
-  removeGig
+  removeGig,
 }

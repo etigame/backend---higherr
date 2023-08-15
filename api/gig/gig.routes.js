@@ -1,9 +1,9 @@
 const express = require('express')
 const { requireAuth } = require('../../middlewares/requireAuth.middleware')
 const { log } = require('../../middlewares/logger.middleware')
-
+const router = express.Router()
 // middleware that is specific to this router
-router.use(requireAuth)
+
 const {
   getGigs,
   getGigById,
@@ -11,12 +11,11 @@ const {
   updateGig,
   removeGig,
 } = require('./gig.controller')
-const router = express.Router()
 
 router.get('/', log, getGigs)
 router.get('/:id', getGigById)
-router.post('/', requireAuth, addGig)
-router.put('/:id', requireAuth, updateGig)
-router.delete('/:id', requireAuth, removeGig)
+router.post('/', addGig)
+router.put('/:id', updateGig)
+router.delete('/:id', removeGig)
 
 module.exports = router
