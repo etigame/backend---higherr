@@ -20,7 +20,6 @@ function setupSocketAPI(http) {
       )
 
       socket.userId = user._id
-      console.log(socket.userId)
       socket.username = user.username
       return
     })
@@ -115,7 +114,6 @@ function setupSocketAPI(http) {
       socket.join('watching:' + buyer.username)
 
       const toSocket = await _getUserSocket(buyer._id)
-      console.log('2', toSocket.id)
       if (toSocket)
         toSocket.emit(
           'order-status-update',
@@ -177,7 +175,6 @@ async function broadcast({ type, data, room = null, userId }) {
 
 async function _getUserSocket(userId) {
   const sockets = await _getAllSockets()
-  console.log(sockets.length)
   const socket = sockets.find((s) => s.userId === userId)
   return socket
 }
@@ -186,14 +183,6 @@ async function _getAllSockets() {
   return sockets
 }
 
-async function _printSockets() {
-  const sockets = await _getAllSockets()
-  console.log(`Sockets: (count: ${sockets.length}):`)
-  sockets.forEach(_printSocket)
-}
-function _printSocket(socket) {
-  console.log(`Socket - socketId: ${socket.id} userId: ${socket.userId}`)
-}
 
 module.exports = {
   // set up the sockets service and define the API
